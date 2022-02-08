@@ -2,12 +2,41 @@ const guessedLettersList = document.querySelector(".guessed-letters");
 const guessButton = document.querySelector(".guess");
 const letterInput = document.querySelector(".letter");
 const wordInProgress = document.querySelector(".word-in-progress");
-const remainingGuesses = document.querySelector(".remaining");
+const remainingGuessesParagraph = document.querySelector(".remaining");
 const remainingGuessesSpan = document.querySelector(".remaining span");
 const message = document.querySelector(".message");
 const playAgainButton = document.querySelector(".play-again");
-const word = "magnolia";
+
+let word = "magnolia";
 const guessedLetters = [];
+let remainingGuesses = 8;
+
+
+// --------------- Get a random word ---------------
+
+async function getWord () {
+
+    // Fetch list of words from linked text file
+    const wordList = await fetch("https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt");
+    const words = await wordList.text();
+
+    // Transform fetched words into an array, separating each word with a newline (line break)
+    const wordArray = words.split("\n");
+
+    // Pull a random index from the wordArray
+    const randomIndex = Math.floor(Math.random() * wordArray.length);
+
+    // Pull the corresponding random word by:
+        // Reassigning the global word variable, so it becomes the word found at the randomIndex
+        // Remove any extra whitespace around the word in the text file by using trim
+    word = wordArray[randomIndex].trim();
+
+    // Diaplay a placeholder for the random word, a dot representing each letter
+    wordPlaceholder(word);
+}
+
+// Fire off the game
+getWord();
 
 
 // --------------- Display dots as placeholders for each letter of the word ---------------
@@ -91,12 +120,12 @@ function validate(input) {
 
     // If input is more than one letter, instruct player to enter a single letter
     else if (input.length > 1) {
-        message.innerText = "Please enter a single letter."
+        message.innerText = "Please enter a single letter.";
     }
 
     // If input doesn't match any accepted values, instruct player to enter a letter from A to Z
     else if (!input.match(acceptedLetter)) {
-        message.innerText = "Please enter a letter from A to Z."
+        message.innerText = "Please enter a letter from A to Z.";
     }
 
     // If none of the above conditions are met, return the submitted letter
@@ -115,7 +144,7 @@ function makeGuess(guess) {
 
     // If player guesses the same letter again, notify them
     if (guessedLetters.includes(guess)) {
-        message.innerText = "You already guessed that letter. Please try again."
+        message.innerText = "You already guessed that letter. Please try again.";
     }
 
     // If player guesses a letter they haven't already guessed, add it to the guessedLetters array
@@ -125,6 +154,9 @@ function makeGuess(guess) {
 
         // Display guessed letters list on page
         showGuessedLetters();
+
+        // Update number of remaining lives
+        updateRemainingGuesses(guess);
 
         // Update word in progress based on player's guesses
         updateWordInProgress(guessedLetters);
@@ -184,6 +216,40 @@ function updateWordInProgress(guessedLetters) {
     }
 };
 
+
+// --------------- Update number of remaining lives ---------------
+
+function updateRemainingGuesses(guess) {
+
+    // Make sure word is uppercase to avoid case-sensitivity issues
+    const upperWord = word.toUpperCase();
+
+    // If the word doesn't include the letter guessed, let the player know and subtract one life
+    if (!upperWord.includes(guess)) {
+        message.innerText = `Sorry, there is no ${guess}.`;
+        remainingGuesses -= 1;
+    } 
+    // If the word does include the letter guessed, tell the player they guessed correctly
+    else {
+        message.innerText = `Good guess! This word includes the letter ${guess}.`;
+    }
+
+    // If there are no lives remaining, say it's game over and tell the player what the word was
+    if (remainingGuesses === 0) {
+        message.innerText = `Sorry, you're out of lives. The word was ${upperWord}.`;
+        remainingGuessesParagraph.innerText = "Game over.";
+    }
+    // Let the player know if there's only one life left
+    else if (remainingGuesses === 1) {
+        remainingGuessesSpan.innerText = `${remainingGuesses} life remaining`;
+    }
+    // If there's more than one life left, tell them how many lives are remaining
+    else {
+        remainingGuessesSpan.innerText = `${remainingGuesses} lives remaining`;
+    }
+};
+
+
 // --------------- Check if player won ---------------
 
 function checkIfWin () {
@@ -194,5 +260,6 @@ function checkIfWin () {
         // If so, add win class and display a message letting the player know they won
         message.classList.add("win");
         message.innerHTML = `<p class="highlight">You guessed the word! Congrats!</p>`;
+        remainingGuessesParagraph.innerText = "";
     }
 };
