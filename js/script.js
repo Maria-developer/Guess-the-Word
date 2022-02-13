@@ -235,9 +235,10 @@ function updateRemainingGuesses(guess) {
     }
 
     // If there are no lives remaining, say it's game over and tell the player what the word was
+    // Show Play Again button
     if (remainingGuesses === 0) {
-        message.innerText = `Sorry, you're out of lives. The word was ${upperWord}.`;
-        remainingGuessesParagraph.innerText = "Game over.";
+        message.innerText = `Game over. The word was ${upperWord}.`;
+        startOver();
     }
     // Let the player know if there's only one life left
     else if (remainingGuesses === 1) {
@@ -260,6 +261,55 @@ function checkIfWin () {
         // If so, add win class and display a message letting the player know they won
         message.classList.add("win");
         message.innerHTML = `<p class="highlight">You guessed the word! Congrats!</p>`;
-        remainingGuessesParagraph.innerText = "";
+
+        // Show Play Again button if player wins
+        startOver();
     }
 };
+
+
+// --------------- Show Play Again button when game ends ---------------
+
+function startOver () {
+
+    // Hide Guess button, remaining guesses, and guessed letters
+    guessButton.classList.add("hide");
+    remainingGuessesParagraph.classList.add("hide");
+    guessedLettersList.classList.add("hide");
+
+    // Show Play Again button
+    playAgainButton.classList.remove("hide");
+};
+
+
+// --------------- When Play Again button is clicked ---------------
+
+playAgainButton.addEventListener("click", function () {
+
+    // Remove win class
+    message.classList.remove("win");
+
+    // Empty the guessedLetters array
+    guessedLetters = [];
+
+    // Set remaining guesses back to 8
+    remainingGuesses = 8;
+    remainingGuessesSpan.innerText = `${remainingGuesses} guesses`;
+
+    // Empty message text and guessed letters list
+    guessedLettersList.innerHTML = "";
+    message.innerText = "";
+
+    // Grab a new word
+    getWord();
+
+    // Show Guess button
+    guessButton.classList.remove("hide");
+
+    // Hide Play Again button
+    playAgainButton.classList.add("hide");
+
+    // Show remaining guesses and guessed letters
+    remainingGuessesParagraph.classList.remove("hide");
+    guessedLettersList.classList.remove("hide");
+});
