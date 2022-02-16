@@ -1,6 +1,6 @@
 const guessedLettersList = document.querySelector(".guessed-letters");
 const guessButton = document.querySelector(".guess");
-const letterInput = document.querySelector(".letter");
+let letterInput = document.querySelector(".letter");
 const wordInProgress = document.querySelector(".word-in-progress");
 const remainingGuessesParagraph = document.querySelector(".remaining");
 const remainingGuessesSpan = document.querySelector(".remaining span");
@@ -8,7 +8,7 @@ const message = document.querySelector(".message");
 const playAgainButton = document.querySelector(".play-again");
 
 let word = "magnolia";
-const guessedLetters = [];
+let guessedLetters = [];
 let remainingGuesses = 8;
 
 
@@ -33,7 +33,9 @@ async function getWord () {
 
     // Diaplay a placeholder for the random word, a dot representing each letter
     wordPlaceholder(word);
-}
+
+    letterInput.focus();
+};
 
 // Fire off the game
 getWord();
@@ -312,4 +314,6 @@ playAgainButton.addEventListener("click", function () {
     // Show remaining guesses and guessed letters
     remainingGuessesParagraph.classList.remove("hide");
     guessedLettersList.classList.remove("hide");
+
+    letterInput.focus();
 });
