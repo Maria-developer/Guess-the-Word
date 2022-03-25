@@ -52,9 +52,7 @@ function wordPlaceholder(word) {
     // Loop over each letter in the array one at a time
     for (const letter of word) {
 
-        // For every loop of a letter, log that letter in the console
-        console.log(letter);
-        // Example output (in console):
+        // Example:
         // m
         // a
         // g
@@ -64,17 +62,15 @@ function wordPlaceholder(word) {
         // i
         // a
 
-        // Each time a letter is logged, add a dot to the end of the array
+        // Each time a letter is looped over, add a dot to the end of the array
         letterPlaceholder.push("●");
-        // For example, when "m" is looped, "m" is logged in the console and a dot is pushed to the array
-        // When "a" is looped, "a" is logged and another dot is added to the end
         // This continues until every letter in the array is looped over, pushing as many dots as there are letters to the array
-        // Example output (on webpage): ●, ●, ●, ●, ●, ●, ●, ●
+        // Example output: ●, ●, ●, ●, ●, ●, ●, ●
     }
 
     // Join placeholder dots side by side, so they aren't separated by commas
     wordInProgress.innerText = letterPlaceholder.join("");
-    // Example output (on webpage): ● ● ● ● ● ● ● ●
+    // Example output: ● ● ● ● ● ● ● ●
 };
 
 // Call function with word argument to display placeholders for each letter
@@ -152,7 +148,6 @@ function makeGuess(guess) {
     // If player guesses a letter they haven't already guessed, add it to the guessedLetters array
     else {
         guessedLetters.push(guess);
-        console.log(guessedLetters);
 
         // Display guessed letters list on page
         showGuessedLetters();
